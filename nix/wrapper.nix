@@ -6,6 +6,7 @@ let
       drv = pkgs.writeShellApplication { inherit name; text = if builtins.typeOf v.exec == "string" then v.exec else ''${lib.getExe v.exec} "$@"''; };
     in
     drv.overrideAttrs (oa: {
+      meta.mainProgram = oa.meta.mainProgram or v.name;
       meta.description =
         if v.description == null then oa.meta.description or "No description" else v.description;
       meta.category = v.category;
@@ -23,14 +24,14 @@ let
           echo -e "Available commands:\n"
           ${
             lib.concatStringsSep "echo;"
-              (lib.mapAttrsToList (cat: commands: 
-                "echo -e '## " + cat + "';echo;" + 
-                  "echo '" + lib.concatStringsSep "\n" 
-                    (map (drv: 
+              (lib.mapAttrsToList (cat: commands:
+                "echo -e '## " + cat + "';echo;" +
+                  "echo '" + lib.concatStringsSep "\n"
+                    (map (drv:
                       let name = builtins.baseNameOf (lib.getExe drv);
                           desc = drv.meta.description;
                       in "  ${config.wrapperName} " + name + "\t: " + desc
-                    ) commands 
+                    ) commands
                     ) + "' | ${lib.getExe pkgs.unixtools.column} -t -s ''$'\t'; "
               ) commandsGrouped)
           }
@@ -57,7 +58,7 @@ let
         if [ "$*" == "" ] || [ "$*" == "-h" ] || [ "$*" == "--help" ]; then
           showHelp
           exit 0
-        else 
+        else
           FLAKE_ROOT="''$(${lib.getExe flake-root})"
           export FLAKE_ROOT
           __"$1"-prerun
