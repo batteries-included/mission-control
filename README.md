@@ -4,9 +4,6 @@ A `flake-parts` module for your Nix devshell scripts
 
 https://community.flake.parts/mission-control
 
-> [!IMPORTANT]  
-> We recommend that you use [just](https://just.systems/man/en/) over this module. For migration, see [this PR](https://github.com/srid/haskell-template/pull/111).
-
 ## Usage
 
 To try out mission-control using the example template, start from one of the following ways:
